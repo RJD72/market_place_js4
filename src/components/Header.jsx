@@ -65,12 +65,12 @@ const Header = () => {
           </li>
           <li>
             <NavLink
-              to="/buy"
+              to="/browse"
               className={({ isActive }) =>
                 isActive ? "text-blue-500 font-semibold" : "hover:text-blue-500"
               }
             >
-              Buy
+              Browse
             </NavLink>
           </li>
           <li>

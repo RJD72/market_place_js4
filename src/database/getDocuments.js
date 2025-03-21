@@ -1,36 +1,123 @@
-import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
+/* eslint-disable no-unused-vars */
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  getDoc,
+  orderBy,
+  doc,
+  limit,
+} from "firebase/firestore";
 import { db } from "../database/firebaseConfig";
 
 /**
- * 🔥 Generic Function: Fetch documents with options
- * @param {string} collectionName - The name of the Firestore collection to fetch documents from.
- * @param {string} [orderByField="createdAt"] - The field to order the documents by.
- * @param {number} [limitNumber=4] - The maximum number of documents to fetch.
- * @returns {Promise<Array<{ id: string, [key: string]: any }>>} - A promise that resolves to an array of documents.
- * @throws {Error} - Throws an error if the fetch operation fails.
+ * Fetch all unique categories from the products collection.
+ * @returns {Promise<string[]>} - A list of unique categories.
  */
-export const fetchDocuments = async (collectionName, limitNumber = 4) => {
+export const fetchCategories = async () => {
   try {
-    const q = query(collection(db, collectionName), limit(limitNumber));
+    const q = query(collection(db, "items"));
+    const querySnapshot = await getDocs(q);
+
+    const categories = new Set();
+    querySnapshot.forEach((doc) => {
+      const category = doc.data().category;
+      if (category) {
+        categories.add(category);
+      }
+    });
+
+    return Array.from(categories);
+  } catch (error) {
+    console.error("Error fetching categories:", error.message);
+    throw error;
+  }
+};
+
+/**
+ * Fetch products by category.
+ * @param {string} category - The category to filter by.
+ * @param {number} limitNumber - The maximum number of items to fetch (default: 4).
+ * @returns {Promise<Array<{ id: string, [key: string]: any }>>} - A list of products.
+ */
+export const fetchProductsByCategory = async (category, limitNumber = 4) => {
+  try {
+    const q = query(
+      collection(db, "items"),
+      where("category", "==", category),
+      // orderBy("createdAt", "desc"),
+      limit(limitNumber)
+    );
 
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-      console.warn(`No documents found in collection: ${collectionName}`);
+      console.warn(`No products found in category: ${category}`);
       return [];
     }
 
-    const documents = [];
+    const products = [];
     querySnapshot.forEach((doc) => {
-      documents.push({ id: doc.id, ...doc.data() });
+      products.push({ id: doc.id, ...doc.data() });
     });
 
-    return documents;
+    return products;
   } catch (error) {
     console.error(
-      `Error fetching documents from ${collectionName}:`,
+      `Error fetching products in category ${category}:`,
       error.message
     );
-    throw new Error(`Failed to fetch documents: ${error.message}`);
+    throw error;
+  }
+};
+
+/**
+ * Fetch all products from the Firestore collection.
+ * @returns {Promise<Array<{ id: string, [key: string]: any }>>} - A list of all products.
+ */
+export const fetchAllProducts = async () => {
+  try {
+    const q = query(
+      collection(db, "items")
+      // orderBy("createdAt", "desc")
+    );
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      console.warn("No products found in the database.");
+      return [];
+    }
+
+    const products = [];
+    querySnapshot.forEach((doc) => {
+      products.push({ id: doc.id, ...doc.data() });
+    });
+
+    return products;
+  } catch (error) {
+    console.error("Error fetching all products:", error.message);
+    throw error;
+  }
+};
+
+/**
+ * Fetch a single product by ID.
+ * @param {string} id - The ID of the product to fetch.
+ * @returns {Promise<{ id: string, [key: string]: any }>} - The product data.
+ */
+export const fetchProductById = async (id) => {
+  try {
+    const docRef = doc(db, "items", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      throw new Error(`Product with ID ${id} not found.`);
+    }
+
+    return { id: docSnap.id, ...docSnap.data() };
+  } catch (error) {
+    console.error(`Error fetching product with ID ${id}:`, error.message);
+    throw error;
   }
 };

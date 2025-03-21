@@ -1,37 +1,38 @@
 import { useEffect, useState } from "react";
-import Card from "../components/Card";
+import {
+  fetchCategories,
+  fetchProductsByCategory,
+} from "../database/getDocuments";
 import Spinner from "../components/Spinner";
-import { fetchDocuments } from "../database/getDocuments";
+import { NavLink } from "react-router-dom";
 
 const Home = () => {
-  const [featuredItems, setFeaturedItems] = useState([]);
-  const [sports, setSports] = useState([]);
-  const [vehicles, setVehicles] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [categoryProducts, setCategoryProducts] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const loadAll = async () => {
+    const loadData = async () => {
       try {
-        // Fetch all data in parallel
-        const [featured, vehicles, sports] = await Promise.all([
-          fetchDocuments("featuredProducts", 4),
-          fetchDocuments("vehicles", 4),
-          fetchDocuments("sports", 4),
-        ]);
+        const categories = await fetchCategories();
+        setCategories(categories);
 
-        setFeaturedItems(featured);
-        setVehicles(vehicles);
-        setSports(sports);
+        const productsByCategory = {};
+        for (const category of categories) {
+          const products = await fetchProductsByCategory(category, 4);
+          productsByCategory[category] = products;
+        }
+        setCategoryProducts(productsByCategory);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error loading data:", error);
         setError("Failed to load data. Please try again later.");
       } finally {
-        setLoading(false); // Ensure loading is set to false regardless of success/error
+        setLoading(false);
       }
     };
 
-    loadAll();
+    loadData();
   }, []);
 
   if (loading) {
@@ -44,26 +45,25 @@ const Home = () => {
 
   return (
     <main className="min-h-screen p-4">
-      <h2 className="text-2xl font-bold mb-4">Featured Items</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {featuredItems.map((item) => (
-          <Card key={item.id} item={item} />
-        ))}
-      </div>
-
-      <h2 className="text-2xl font-bold mt-8 mb-4">Vehicles</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {vehicles.map((item) => (
-          <Card key={item.id} item={item} />
-        ))}
-      </div>
-
-      <h2 className="text-2xl font-bold mt-8 mb-4">Sports</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {sports.map((item) => (
-          <Card key={item.id} item={item} />
-        ))}
-      </div>
+      {categories.map((category) => (
+        <div key={category} className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">{category}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {categoryProducts[category]?.map((item) => (
+              <div key={item.id} className="border p-4 rounded-lg">
+                <h3 className="text-lg font-semibold">{item.title}</h3>
+                <p>{item.description}</p>
+                <NavLink
+                  to="/details"
+                  state={{ id: item.id }} // Pass the product ID
+                >
+                  <button className="btn btn-primary mt-2">Buy Now</button>
+                </NavLink>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
     </main>
   );
 };

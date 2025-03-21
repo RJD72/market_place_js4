@@ -7,6 +7,8 @@ import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Sell from "./pages/Sell";
+import Browse from "./pages/Browse";
+import CategoryPage from "./pages/CategoryPage";
 
 function App() {
   return (
@@ -14,11 +16,13 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/details/:id" element={<Details />} />
+        <Route path="/details" element={<Details />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/sell" element={<Sell />} />
+        <Route path="/browse" element={<Browse />} />
+        <Route path="/category/:category" element={<CategoryPage />} />
       </Routes>
       <Footer />
     </>
