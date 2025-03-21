@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { fetchProductById } from "../database/getDocuments";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom"; // Use useParams
+import { fetchProductById } from "../database/getDocuments"; // Adjust the import path
 import Spinner from "../components/Spinner";
 
 const Details = () => {
-  const location = useLocation();
+  const { id } = useParams(); // Get the product ID from the URL
   const navigate = useNavigate();
-  const { id } = location.state || {}; // Get the product ID from navigation state
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -41,7 +40,9 @@ const Details = () => {
 
   if (!product) {
     return (
-      <div className="text-gray-500 text-center mt-8">Product not found.</div>
+      <div className="text-gray-500 text-center mt-8">
+        Product not found. Please go back and try again.
+      </div>
     );
   }
 

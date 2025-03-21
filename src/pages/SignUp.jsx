@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { registerUser } from "../database/auth"; // Adjust the import path
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -119,6 +119,13 @@ const SignUp = () => {
           >
             Register
           </button>
+
+          <p>
+            Already have an account?{" "}
+            <NavLink to="/signin" className="text-blue-500 hover:underline">
+              Sign In
+            </NavLink>
+          </p>
         </div>
       </form>
     </div>

@@ -48,8 +48,8 @@ const Browse = () => {
               <h3 className="text-lg font-semibold">{item.title}</h3>
               <p>{item.description}</p>
               <NavLink
-                to="/details"
-                state={{ id: item.id }} // Pass the product ID
+                to={`/details/${item.id}`}
+                // Pass the product ID
               >
                 <button className="btn btn-primary mt-2">Buy Now</button>
               </NavLink>

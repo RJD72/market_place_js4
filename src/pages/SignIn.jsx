@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { signIn } from "../database/auth"; // Adjust the import path
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -25,7 +25,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 ">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
@@ -55,6 +55,13 @@ const SignIn = () => {
           >
             Sign In
           </button>
+
+          <p>
+            Don't have an account?{" "}
+            <NavLink to="/signup" className="text-blue-500 hover:underline">
+              Sign Up
+            </NavLink>
+          </p>
         </div>
       </form>
     </div>

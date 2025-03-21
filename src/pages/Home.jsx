@@ -21,6 +21,7 @@ const Home = () => {
         const productsByCategory = {};
         for (const category of categories) {
           const products = await fetchProductsByCategory(category, 4);
+
           productsByCategory[category] = products;
         }
         setCategoryProducts(productsByCategory);
@@ -54,7 +55,7 @@ const Home = () => {
                 <h3 className="text-lg font-semibold">{item.title}</h3>
                 <p>{item.description}</p>
                 <NavLink
-                  to="/details"
+                  to={`/details/${item.id}`}
                   state={{ id: item.id }} // Pass the product ID
                 >
                   <button className="btn btn-primary mt-2">Buy Now</button>

@@ -51,10 +51,8 @@ const CategoryPage = () => {
             <div key={item.id} className="border p-4 rounded-lg">
               <h3 className="text-lg font-semibold">{item.title}</h3>
               <p>{item.description}</p>
-              <NavLink
-                to="/details"
-                state={{ id: item.id }} // Pass the product ID
-              >
+              {/* Ensure the "Buy Now" link uses the correct dynamic route */}
+              <NavLink to={`/details/${item.id}`}>
                 <button className="btn btn-primary mt-2">Buy Now</button>
               </NavLink>
             </div>

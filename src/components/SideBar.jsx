@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 const Sidebar = ({ categories }) => {
   return (
-    <aside className="w-64 bg-gray-100 p-4">
+    <aside className="w-64 bg-gray-100 p-4 min-h-screen">
       <h2 className="text-xl font-bold mb-4">Categories</h2>
       <ul>
         {categories.map((category) => (
