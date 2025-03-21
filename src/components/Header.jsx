@@ -1,15 +1,37 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaMagnifyingGlass } from "react-icons/fa6";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { app } from "../database/firebaseConfig"; // Adjust the import path
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSignedIn, setIsSignedIn] = useState(false); // Track user's sign-in state
   const navigate = useNavigate();
+  const auth = getAuth(app);
+
+  // Check if the user is signed in
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsSignedIn(!!user); // Set isSignedIn to true if user is logged in
+    });
+
+    return () => unsubscribe(); // Cleanup on unmount
+  }, [auth]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`); // Redirect to search results page
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      navigate("/"); // Redirect to home page after sign-out
+    } catch (error) {
+      console.error("Error signing out:", error.message);
     }
   };
 
@@ -51,16 +73,25 @@ const Header = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink
-                to="/signin"
-                className={({ isActive }) =>
-                  isActive
-                    ? "text-blue-500 font-semibold"
-                    : "hover:text-blue-500"
-                }
-              >
-                Sign In
-              </NavLink>
+              {isSignedIn ? (
+                <button
+                  onClick={handleSignOut}
+                  className="hover:text-blue-500 focus:outline-none"
+                >
+                  Sign Out
+                </button>
+              ) : (
+                <NavLink
+                  to="/signin"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-blue-500 font-semibold"
+                      : "hover:text-blue-500"
+                  }
+                >
+                  Sign In
+                </NavLink>
+              )}
             </li>
             <li>
               <NavLink
