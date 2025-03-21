@@ -117,6 +117,20 @@ const Header = () => {
                 Browse
               </NavLink>
             </li>
+            {isSignedIn && (
+              <li>
+                <NavLink
+                  to="/profile"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-blue-500 font-semibold"
+                      : "hover:text-blue-500"
+                  }
+                >
+                  Profile
+                </NavLink>
+              </li>
+            )}
           </ul>
         </nav>
       </div>
