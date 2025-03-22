@@ -1,20 +1,15 @@
-/* eslint-disable no-unused-vars */
 import {
   collection,
   query,
   where,
   getDocs,
   getDoc,
-  orderBy,
   doc,
   limit,
 } from "firebase/firestore";
-import { db } from "../database/firebaseConfig";
+import { db } from "./firebaseConfig";
 
-/**
- * Fetch all unique categories from the products collection.
- * @returns {Promise<string[]>} - A list of unique categories.
- */
+// Fetch categories
 export const fetchCategories = async () => {
   try {
     const q = query(collection(db, "items"));
@@ -35,18 +30,12 @@ export const fetchCategories = async () => {
   }
 };
 
-/**
- * Fetch products by category.
- * @param {string} category - The category to filter by.
- * @param {number} limitNumber - The maximum number of items to fetch (default: 4).
- * @returns {Promise<Array<{ id: string, [key: string]: any }>>} - A list of products.
- */
+// Fetch products by category
 export const fetchProductsByCategory = async (category, limitNumber = 4) => {
   try {
     const q = query(
       collection(db, "items"),
       where("category", "==", category),
-      // orderBy("createdAt", "desc"),
       limit(limitNumber)
     );
 
@@ -72,20 +61,14 @@ export const fetchProductsByCategory = async (category, limitNumber = 4) => {
   }
 };
 
-/**
- * Fetch all products from the Firestore collection.
- * @returns {Promise<Array<{ id: string, [key: string]: any }>>} - A list of all products.
- */
+// Fetch all products
 export const fetchAllProducts = async () => {
   try {
-    const q = query(
-      collection(db, "items")
-      // orderBy("createdAt", "desc")
-    );
+    const q = query(collection(db, "items"));
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-      console.warn("No products found in the database.");
+      console.warn("No products found.");
       return [];
     }
 
@@ -96,16 +79,12 @@ export const fetchAllProducts = async () => {
 
     return products;
   } catch (error) {
-    console.error("Error fetching all products:", error.message);
+    console.error("Error fetching products:", error.message);
     throw error;
   }
 };
 
-/**
- * Fetch a single product by ID.
- * @param {string} id - The ID of the product to fetch.
- * @returns {Promise<{ id: string, [key: string]: any }>} - The product data.
- */
+// Fetch single product
 export const fetchProductById = async (id) => {
   try {
     const docRef = doc(db, "items", id);
@@ -118,6 +97,36 @@ export const fetchProductById = async (id) => {
     return { id: docSnap.id, ...docSnap.data() };
   } catch (error) {
     console.error(`Error fetching product with ID ${id}:`, error.message);
+    throw error;
+  }
+};
+
+// Fetch logged-in user's profile info
+export const fetchUserProfile = async (userId) => {
+  try {
+    const docRef = doc(db, "users", userId);
+    const docSnap = await getDoc(docRef);
+    return docSnap.exists() ? docSnap.data() : null;
+  } catch (error) {
+    console.error("Error fetching user profile:", error.message);
+    throw error;
+  }
+};
+
+// Fetch items posted by logged-in user
+export const fetchUserItems = async (userId) => {
+  try {
+    const q = query(collection(db, "items"), where("userId", "==", userId));
+    const querySnapshot = await getDocs(q);
+
+    const userItems = [];
+    querySnapshot.forEach((doc) => {
+      userItems.push({ id: doc.id, ...doc.data() });
+    });
+
+    return userItems;
+  } catch (error) {
+    console.error("Error fetching user items:", error.message);
     throw error;
   }
 };

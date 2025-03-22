@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, NavLink } from "react-router-dom"; // Import NavLink
 import { fetchAllProducts } from "../database/getDocuments"; // Adjust the import path
+import Card from "../components/Card";
 
 const SearchResults = () => {
   const location = useLocation();
@@ -38,24 +39,14 @@ const SearchResults = () => {
   }
 
   return (
-    <div className="p-4">
+    <div className="p-4 min-h-screen">
       <h2 className="text-2xl font-bold mb-4">
         Search Results for "{searchQuery}"
       </h2>
       {results.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-[1200px] mx-auto">
           {results.map((item) => (
-            <div key={item.id} className="border p-4 rounded-lg">
-              <h3 className="text-lg font-semibold">{item.title}</h3>
-              <p>{item.description}</p>
-              {/* Update the "View Details" link */}
-              <NavLink
-                to={`/details/${item.id}`} // Use dynamic route
-                className="text-blue-500 hover:underline"
-              >
-                View Details
-              </NavLink>
-            </div>
+            <Card key={item.id} item={item} />
           ))}
         </div>
       ) : (

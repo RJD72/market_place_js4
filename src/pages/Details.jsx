@@ -47,23 +47,35 @@ const Details = () => {
   }
 
   return (
-    <div className="p-4">
+    <article className="p-4 min-h-screen">
       {/* Back Button */}
+
       <button
         onClick={() => navigate(-1)} // Go back to the previous page
-        className="mb-4 text-blue-500 hover:underline"
+        className="mb-4 text-blue-500 hover:underline cursor-pointer"
       >
         &larr; Back
       </button>
-
-      {/* Product Details */}
-      <h1 className="text-2xl font-bold">{product.title}</h1>
-      <p className="mt-4">{product.description}</p>
-      <p className="mt-2">Price: ${product.price}</p>
-      <p className="mt-2">Category: {product.category}</p>
-
-      {/* Add more fields as needed */}
-    </div>
+      <div className="max-w-[1200px] mx-auto mt-24">
+        <div className="w-full flex flex-col md:flex-row gap-8">
+          {/* Product Details */}
+          <div className="">
+            <img src={product.image} alt={product.title} className="rounded" />
+          </div>
+          <div className="flex justify-center items-center pr-4">
+            <div className="">
+              <h1 className="text-2xl font-bold">{product.title}</h1>
+              <p className="mt-4">{product.description}</p>
+              <p className="mt-2">Price: ${product.price}</p>
+              <p className="mt-2">Category: {product.category}</p>
+              <div className="mt-4">
+                <button>Contact Seller</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
   );
 };
 

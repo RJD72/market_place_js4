@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAuth } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
-import { db } from "../database/firebaseConfig";
+import { fetchProductById } from "../database/getDocuments";
+import { addOrUpdateProduct } from "../database/addDocuments";
 
 const Sell = () => {
-  const { itemId } = useParams(); // For editing an existing item
+  const { id } = useParams();
   const navigate = useNavigate();
   const auth = getAuth();
   const user = auth.currentUser;
@@ -18,61 +18,63 @@ const Sell = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Fetch item data if editing
+  // Load existing product when editing
   useEffect(() => {
-    if (itemId) {
-      const fetchItem = async () => {
-        try {
-          const itemDoc = await getDoc(doc(db, "products", itemId));
-          if (itemDoc.exists()) {
-            const itemData = itemDoc.data();
-            setTitle(itemData.title);
-            setPrice(itemData.price);
-            setDescription(itemData.description);
-            setCategory(itemData.category);
-            setImage(itemData.image);
-          }
-        } catch (error) {
-          console.error("Error fetching item:", error);
-          setError("Failed to load item details.");
+    const loadProduct = async () => {
+      try {
+        if (id) {
+          const product = await fetchProductById(id);
+          setTitle(product.title);
+          setPrice(product.price);
+          setDescription(product.description);
+          setCategory(product.category);
+          setImage(product.image);
         }
-      };
-      fetchItem();
-    }
-  }, [itemId]);
+      } catch (error) {
+        console.error(error);
+        setError("Failed to load item.");
+      }
+    };
 
+    loadProduct();
+  }, [id]);
+
+  // Handle image upload (Base64 conversion)
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImage(reader.result); // Base64 string
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      if (!user) {
-        throw new Error("You must be logged in to post an item.");
-      }
+      if (!user) throw new Error("You must be logged in.");
 
       const itemData = {
         title,
         price: parseFloat(price),
         description,
         category,
-        image,
+        image, // Base64 or URL
         userId: user.uid,
         createdAt: new Date().toISOString(),
       };
 
-      if (itemId) {
-        // Update existing item
-        await setDoc(doc(db, "products", itemId), itemData, { merge: true });
-      } else {
-        // Create new item
-        await setDoc(doc(collection(db, "products")), itemData);
-      }
-
-      navigate("/profile"); // Redirect to profile page after submission
+      await addOrUpdateProduct(id, itemData);
+      navigate("/profile");
     } catch (error) {
-      console.error("Error submitting item:", error);
-      setError("Failed to submit item. Please try again.");
+      console.error(error);
+      setError("Failed to submit item.");
     } finally {
       setLoading(false);
     }
@@ -81,7 +83,7 @@ const Sell = () => {
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">
-        {itemId ? "Edit Item" : "Sell Item"}
+        {id ? "Edit Item" : "Sell Item"}
       </h2>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -129,21 +131,29 @@ const Sell = () => {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Image URL</label>
+          <label className="block text-sm font-medium mb-1">Upload Image</label>
           <input
-            type="text"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
             className="w-full p-2 border rounded"
-            placeholder="Paste an image URL or leave blank"
           />
+          {image && (
+            <div className="mt-2">
+              <img
+                src={image}
+                alt="Preview"
+                className="w-32 h-32 object-cover rounded"
+              />
+            </div>
+          )}
         </div>
         <button
           type="submit"
           disabled={loading}
           className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
         >
-          {loading ? "Submitting..." : itemId ? "Update Item" : "Post Item"}
+          {loading ? "Submitting..." : id ? "Update Item" : "Post Item"}
         </button>
       </form>
     </div>

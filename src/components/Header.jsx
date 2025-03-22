@@ -23,6 +23,7 @@ const Header = () => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`); // Redirect to search results page
+      setSearchQuery("");
     }
   };
 
@@ -93,18 +94,20 @@ const Header = () => {
                 </NavLink>
               )}
             </li>
-            <li>
-              <NavLink
-                to="/signup"
-                className={({ isActive }) =>
-                  isActive
-                    ? "text-blue-500 font-semibold"
-                    : "hover:text-blue-500"
-                }
-              >
-                Sign Up
-              </NavLink>
-            </li>
+            {!isSignedIn && (
+              <li>
+                <NavLink
+                  to="/signup"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-blue-500 font-semibold"
+                      : "hover:text-blue-500"
+                  }
+                >
+                  Sign Up
+                </NavLink>
+              </li>
+            )}
             <li>
               <NavLink
                 to="/browse"
