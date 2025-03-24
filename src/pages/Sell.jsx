@@ -76,7 +76,14 @@ const Sell = () => {
         createdAt: new Date().toISOString(),
       };
 
-      await addOrUpdateProduct(id, itemData);
+      let result = await addOrUpdateProduct(id, itemData);
+      if (result) {
+        setLoading(false);
+        alert("Product updated successfully.");
+      } else {
+        setLoading(false);
+        alert("Product added successfully");
+      }
       navigate("/profile");
     } catch (error) {
       console.error(error);
@@ -92,7 +99,7 @@ const Sell = () => {
         {id ? "Edit Item" : "Sell Item"}
       </h2>
       {error && <p className="text-red-500 mb-4">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 mb-28">
         <div>
           <label className="block text-sm font-medium mb-1">Title</label>
           <input
@@ -134,6 +141,7 @@ const Sell = () => {
             <option value="clothing">Clothing</option>
             <option value="books">Books</option>
             <option value="furniture">Furniture</option>
+            <option value="sports">Sports</option>
           </select>
         </div>
         <div>

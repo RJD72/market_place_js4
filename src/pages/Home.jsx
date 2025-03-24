@@ -51,6 +51,10 @@ const Home = () => {
 
   return (
     <main className=" p-4">
+      <div className="flex flex-col justify-center items-center mt-4 mb-8">
+        <h1 className="font-bold text-4xl">Welcome to Market Place</h1>
+        <h3>Your one stop shop for all things used</h3>
+      </div>
       {categories.map((category) => (
         <div key={category} className="mb-8">
           <h2 className="text-2xl text-center font-bold my-4">

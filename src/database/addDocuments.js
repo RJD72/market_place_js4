@@ -5,7 +5,10 @@ import { doc, setDoc, deleteDoc, collection } from "firebase/firestore";
 export const addOrUpdateProduct = async (itemId, itemData) => {
   try {
     if (itemId) {
-      await setDoc(doc(db, "items", itemId), itemData, { merge: true });
+      await setDoc(doc(db, "items", itemId), itemData, {
+        merge: true,
+      });
+      return true;
     } else {
       const newDocRef = doc(collection(db, "items"));
       await setDoc(newDocRef, itemData);

@@ -30,6 +30,7 @@ const Header = () => {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
+      alert("You have successfully signed out.");
       navigate("/"); // Redirect to home page after sign-out
     } catch (error) {
       console.error("Error signing out:", error.message);

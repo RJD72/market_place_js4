@@ -53,6 +53,7 @@ const Profile = () => {
   // Handle Delete
   const handleDelete = async (itemId) => {
     try {
+      confirm("Are you sure you want to delete this item?");
       await deleteProduct(itemId);
       setItems(items.filter((item) => item.id !== itemId));
     } catch (error) {
@@ -66,7 +67,7 @@ const Profile = () => {
   if (error) return <div className="p-4 text-red-500">{error}</div>;
 
   return (
-    <div className="p-4">
+    <div className="p-4 min-h-screen">
       <h2 className="text-2xl font-bold mb-4">Your Profile</h2>
 
       {userData && (
@@ -104,7 +105,7 @@ const Profile = () => {
             >
               <h4 className="text-lg font-semibold">{item.title}</h4>
               <p className="text-gray-600">${item.price}</p>
-              <p className="text-sm">{item.description}</p>
+              <p className="text-sm line-clamp-3">{item.description}</p>
               <div className="mt-2">
                 <button
                   onClick={() => navigate(`/sell/${item.id}`)}

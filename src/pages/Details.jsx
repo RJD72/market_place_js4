@@ -63,7 +63,7 @@ const Details = () => {
   }
 
   return (
-    <article className="p-4 min-h-screen">
+    <article className="p-4">
       <button
         onClick={() => navigate(-1)}
         className="mb-4 text-blue-500 hover:underline cursor-pointer"
@@ -71,7 +71,7 @@ const Details = () => {
         &larr; Back
       </button>
 
-      <div className="max-w-[1200px] mx-auto mt-24">
+      <div className="max-w-[1200px] mx-auto mb-40 mt-4">
         <div className="w-full flex flex-col md:flex-row gap-8">
           <div>
             <img src={product.image} alt={product.title} className="rounded" />

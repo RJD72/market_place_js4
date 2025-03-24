@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { fetchCategories, fetchAllProducts } from "../database/getDocuments";
 import Spinner from "../components/Spinner";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/SideBar";
 import Card from "../components/Card";
+import { Outlet } from "react-router-dom";
 
 const Browse = () => {
   const [categories, setCategories] = useState([]);

@@ -5,7 +5,7 @@ import {
   fetchProductsByCategory,
 } from "../database/getDocuments";
 import Spinner from "../components/Spinner";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/SideBar";
 import Card from "../components/Card";
 
 const CategoryPage = () => {
