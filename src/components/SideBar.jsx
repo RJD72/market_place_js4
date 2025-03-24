@@ -1,6 +1,10 @@
 import { NavLink } from "react-router-dom";
 
 const Sidebar = ({ categories }) => {
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  }
+
   return (
     <aside className="w-64 bg-gray-100 p-4 min-h-screen">
       <h2 className="text-xl font-bold mb-4">Categories</h2>
@@ -11,7 +15,7 @@ const Sidebar = ({ categories }) => {
               to={`/category/${category}`}
               className="text-blue-500 hover:underline"
             >
-              {category}
+              {capitalize(category)}
             </NavLink>
           </li>
         ))}

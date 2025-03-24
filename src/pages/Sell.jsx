@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAuth } from "firebase/auth";
-import { fetchProductById } from "../database/getDocuments";
+import { fetchProductById, fetchUserProfile } from "../database/getDocuments";
 import { addOrUpdateProduct } from "../database/addDocuments";
 
 const Sell = () => {
@@ -60,13 +60,19 @@ const Sell = () => {
     try {
       if (!user) throw new Error("You must be logged in.");
 
+      // Fetch user's profile info
+      const profileData = await fetchUserProfile(user.uid);
+
       const itemData = {
         title,
         price: parseFloat(price),
         description,
         category,
-        image, // Base64 or URL
+        image,
         userId: user.uid,
+        sellerName: profileData.name,
+        sellerEmail: profileData.email,
+        sellerPhone: profileData.phone,
         createdAt: new Date().toISOString(),
       };
 

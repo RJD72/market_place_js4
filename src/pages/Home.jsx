@@ -50,10 +50,10 @@ const Home = () => {
   }
 
   return (
-    <main className="min-h-screen p-4">
+    <main className=" p-4">
       {categories.map((category) => (
         <div key={category} className="mb-8">
-          <h2 className="text-2xl text-center font-bold mb-4">
+          <h2 className="text-2xl text-center font-bold my-4">
             {capitalize(category)}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

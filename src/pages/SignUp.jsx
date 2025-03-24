@@ -33,7 +33,10 @@ const SignUp = () => {
       console.log("User registered successfully:", user);
       console.log("Additional user data:", additionalData);
 
-      // Redirect to the home page or login page
+      if (user) {
+        alert("Registration completed successfully");
+      }
+
       navigate("/");
     } catch (error) {
       setError(error.message);

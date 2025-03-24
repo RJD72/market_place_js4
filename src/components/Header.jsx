@@ -37,12 +37,10 @@ const Header = () => {
   };
 
   return (
-    <header className="w-full p-4 bg-white shadow-md">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+    <header className="p-4 bg-white shadow-md">
+      <div className="flex flex-col md:flex-row items-center md:justify-between gap-4">
         {/* Logo / Title */}
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
-          Market Place
-        </h2>
+        <h2 className="text-3xl font-bold text-gray-800">Market Place</h2>
 
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="relative w-full max-w-sm">
@@ -60,7 +58,7 @@ const Header = () => {
 
         {/* Navigation */}
         <nav>
-          <ul className="flex flex-col md:flex-row justify-center items-center gap-2 md:gap-6 text-gray-700 text-sm md:text-base">
+          <ul className="flex flex-col md:flex-row gap-2 md:gap-6 text-gray-700">
             <li>
               <NavLink
                 to="/"
